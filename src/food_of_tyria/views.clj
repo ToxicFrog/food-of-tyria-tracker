@@ -1,4 +1,4 @@
-(ns food-of-tyria.views.layout
+(ns food-of-tyria.views
   (:require [hiccup.page :refer [html5 include-css]]
             [food-of-tyria.models.recipes :as recipes]))
 
@@ -19,6 +19,13 @@
       [:a {:href (str "/items/" (item :id))} (item :name)]
       (item :name))]])
 
+(defn type-list []
+  (->> (recipes/get-recipes)
+       (map :type)
+       (distinct)
+       (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
+       (apply page)))
+
 (defn item-page [id]
   (let [item (recipes/get-item id)]
     (page
@@ -27,15 +34,21 @@
        (item :name)
        [:img {:src (item :icon)}]]
       [:div {:align "center" :width "50%"}
-       [:h2 (item :type)]
+       [:i (item :type)]
+       " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
+       " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
+       "]"
        [:hr]
        (if (item :ingredients)
          (vec (concat [:table] (mapv item-tr (item :ingredients)))))]
       )))
 
-(defn recipes-page []
+(defn recipes-page [type]
   (->> (recipes/get-recipes)
+       (filter #(= type (:type %)))
+       (sort-by :skill)
        (mapv item-tr)
        (concat [:table])
        (vec)
        (page)))
+
