@@ -1,4 +1,10 @@
 (ns food-of-tyria.models.recipes
+  "Data model for recipes and items.
+  Items are simple; we store {:id :name :description :icon}.
+  Recipes we partially merge with the item they produce, adding the keys
+  {:recipe-id :skill :type :ingredients}.
+  :ingredients is a vec of {:id :count}.
+  "
   (:require [clojure.data.json :as json])
   (:require [clj-http.client :as http])
   (:require [codax.core :as c])
@@ -17,12 +23,11 @@
     (->> recipe :disciplines (some #{"Chef"}))
     (->> recipe :type #{"Dessert" "Feast" "IngredientCooking" "Meal" "Seasoning" "Snack" "Soup" "Food"})))
 
-(defn fetch-and-store
+(defn- fetch-and-store
   "Fetch an item by ID and store the result in the database. If already in the
   database, fetches nothing and returns the stored item. Items are pruned down
   to just the fields we care about."
   [id]
-  (println "fetch-and-store" id)
   (c/update-at!
     db [:items id]
     (fn [item]
@@ -30,7 +35,7 @@
         (-> (str "https://api.guildwars2.com/v2/items/" id)
             http/get :body
             (json/read-str :key-fn keyword)
-            (select-keys [:name :id :icon]))
+            (select-keys [:name :id :icon :description]))
         item))))
 
 (defn- difficulty-to-tier [rating]
@@ -48,25 +53,23 @@
   its output item and all input items into the database, and annotate the output
   item with the recipe."
   [recipe]
-  (println "cook-and-store" recipe)
   ; Fetch and store all the ingredients of the recipe.
   (->> (recipe :ingredients)
        (map :item_id)
        ; Skips items already in the DB, so this won't repeatedly re-fetch things.
-       (map fetch-and-store)
-       (map :name)
-       (map #(println "ITEM" %))
-       dorun)
+       (run! fetch-and-store))
   ; Fetch the output item and annotate it with the recipe.
-  (let [output (fetch-and-store (recipe :output_item_id))
-        recipe {:id (recipe :id)
-                :type (recipe :type)
-                :difficulty (recipe :min_rating)
-                :count (recipe :output_item_count)
-                :ingredients (recipe :ingredients)}]
+  (let [output (assoc
+                 (fetch-and-store (recipe :output_item_id))
+                 :recipe-id (recipe :id)
+                 :count (recipe :output_item_count)
+                 :skill (recipe :min_rating)
+                 :type (recipe :type)
+                 :ingredients (mapv (fn [i]
+                                      {:id (i :item_id) :count (i :count)})
+                                    (recipe :ingredients)))]
     (println "COOK" (output :name))
-    (c/assoc-at! db [:items (output :id) :recipe] recipe)
-    (c/assoc-at! db [:recipes (recipe :id)] recipe)
+    (c/assoc-at! db [:items (output :id)] output)
     ))
 
 (defn init []
@@ -79,20 +82,21 @@
             (partition 30 $)
             (mapcat fetch-recipes $)
             (filter cookable? $)
-            (take 1 $)
-            (do (println "recipes" $) $)
-            ; (do (System/exit 0) $)
-            ; we are rate limited to 600 requests/minute
-            ; unfortunately this pmap does the thing too fast
-            ; we can ask for like 30 recipes at a time though
             (run! cook-and-store $))
       (c/assoc-at! db [:initialized?] true))))
 
 (defn deinit [] (c/close-database! db))
 
 (defn get-item [id]
-  (let [output (c/get-at! db [:items id])
-        reify-item (fn [ingredient] (assoc ingredient :item (get-item (ingredient :item_id))))]
-    (update-in
-      output [:recipe :ingredients]
-      (fn [ingredients] (map reify-item (-> output :recipe :ingredients))))))
+  "Get an item from the database. If it has a recipe, the ingredients for the
+  recipe will be recursively merged with the items they reference."
+  (let [item (c/get-at! db [:items id])
+        reify-ingredient (fn [i] (merge (get-item (i :id)) i))]
+    (if (item :ingredients)
+      (update-in item [:ingredients] (partial mapv reify-ingredient))
+      item)))
+
+(defn get-recipes []
+  (->> (c/seek-at! db [:items])
+       (map second)
+       (filter :ingredients)))

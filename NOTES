@@ -1,0 +1,89 @@
+Recipe display -- lists all recipes (filter by skill level?) with pictures and top-level ingredients
+Click on a recipe to display detailed breakdown of all ingredients
+Toggle next to each recipe to toggle whether it's assembled or not
+
+Use ring/compojure/hiccup for routing and rendering, Codax for persistence
+
+To get the Guild Wars recipes:
+
+  https://api.guildwars2.com/v2/recipes returns a list of recipe IDs
+  https://api.guildwars2.com/v2/recipes/<id> returns that recipe
+  https://api.guildwars2.com/v2/recipes?ids=1,2,3 returns multiple recipes as a list
+
+Recipes have the format:
+
+  {
+    "type": "Dessert",
+    "output_item_id": 92078,
+    "output_item_count": 1,
+    "min_rating": 400,
+    "time_to_craft_ms": 1000,
+    "disciplines": ["Chef"],
+    "flags": ["LearnedFromItem"],
+    "ingredients": [
+      {"item_id": 92001, "count": 5 },
+      {"item_id": 38216, "count": 1 },
+      {"item_id": 86601, "count": 25 }
+    ],
+    "id": 13269,
+    "chat_link": "[&CdUzAAA=]"
+  }
+
+We want everything with disciplines:Chef or type:Dessert,Feast,IngredientCooking,Meal,Seasoning,Snack,Soup,Food
+From each recipe, we need type, output_item_id, output_item_count, min_rating (== difficulty level), and ingredients.
+
+To get the item names, we use https://api.guildwars2.com/v2/items/<id> (or ?ids=...). An item looks like:
+
+  {
+    "name": "Bowl of Ice Cream Base",
+    "description": "Ingredient",
+    "type": "CraftingMaterial",
+    "level": 0,
+    "rarity": "Basic",
+    "vendor_value": 0,
+    "game_types": [
+      "Activity",
+      "Wvw",
+      "Dungeon",
+      "Pve"
+    ],
+    "flags": [],
+    "restrictions": [],
+    "id": 38216,
+    "chat_link": "[&AgFIlQAA]",
+    "icon": "https://render.guildwars2.com/file/010E650C71750F112E18D248D0E445E017E8425F/526285.png"
+  }
+
+From this we need name, description, and icon.
+
+To figure out which ingredients are the result of recipes in their own right, and which ones are standalone items, we need to see if our recipe list includes a recipe with an output_item_id that matches the id of the item itself.
+
+We'll need to fetch everything on startup, I think, given this. Fetch all the recipes, extract just the ones and parts we need, fetch all the items for them, write everything to Codax and serve from that.
+
+The final structure as written is going to be indexed by item ID and look something like:
+
+  {
+    "name": "Bowl of Green Chile Ice Cream",
+    "id": 92078,
+    "icon": "https://render.guildwars2.com/file/AC253CF4E66C630624931EB39D17F066D7EFE837/2199296.png",
+    "recipe": {
+      "type": "Dessert",
+      "output_item_count": 1,
+      "min_rating": 400,
+      "ingredients": [92001, 38216, 86601],
+      "id": 13269,
+      "chat_link": "[&CdUzAAA=]"
+    }
+  }
+  {
+    "name": "Snowflake",
+    "id": 92078,
+    "icon": "https://render.guildwars2.com/file/AC253CF4E66C630624931EB39D17F066D7EFE837/2199296.png",
+  }
+
+
+Database layout stuff
+Two ways of organizing this, recipe first or item first or both
+In item-first organization, we just create a map of item ID -> item, and items that can be created from recipes have the recipe embedded in them. Completed items are marked completed by ID.
+In recipe-first, we create a map of recipe ID -> recipe, and the recipe has the input and output items embedded in it.
+In both, we create the item and recipe maps, items that are created from recipes have the recipe ID in them and recipes have the output item ID. This is more "databasey", but item-first is probably easier to work with.
