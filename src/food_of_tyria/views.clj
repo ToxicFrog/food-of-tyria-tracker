@@ -23,6 +23,7 @@
   (->> (recipes/get-recipes)
        (map :type)
        (distinct)
+       (sort)
        (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
        (apply page)))
 
