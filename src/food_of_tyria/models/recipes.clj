@@ -19,9 +19,9 @@
       (json/read-str :key-fn keyword)))
 
 (defn- cookable? [recipe]
-  (or
-    (->> recipe :disciplines (some #{"Chef"}))
-    (->> recipe :type #{"Dessert" "Feast" "IngredientCooking" "Meal" "Seasoning" "Snack" "Soup" "Food"})))
+  (and
+    (some #{"Chef"} (recipe :disciplines))
+    (not (contains? #{"Backpack" "Dye" "Feast" "Refinement" "RefinementObsidian"} (recipe :type)))))
 
 (defn- fetch-and-store
   "Fetch an item by ID and store the result in the database. If already in the
