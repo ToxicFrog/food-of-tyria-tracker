@@ -23,14 +23,14 @@
       [:td (item :name)])]
    (if (item :ingredients)
      [:tr
-      [:td] [:td]
+      [:td {:colspan 2 :style "font-weight:bold; font-size:60px; vertical-align:top;"} "↳"]
       [:td (ingredient-table (item :ingredients))]]
      "")])
 
 (def vcat (comp vec concat))
 
 (defn- ingredient-table [ingredients]
-  (vcat [:table]
+  (vcat [:table {:style "border:1px solid grey;"}]
         (mapcat item-tr ingredients)))
 
 (defn type-list []
@@ -50,15 +50,16 @@
        " " (item :name) " "
        [:img {:src (item :icon)}]]
       ]]
-      [:div {:align "center" :width "50%"}
-       [:i (item :type)]
+      [:div {:align "center"}
+       [:i (item :type) " -- makes " (item :count)]
        " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
        " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
        "]"
-       (if (item :name)
+       (if (item :name) ; TODO replace with check if cooked or not
          [:span {:style "font-weight:bold; text-shadow:0 0 5px #F00"} [:input {:type "checkbox"}] " 🍴"]
          " 🍴")
        [:hr]
+       ; TODO lay out ingredient tables side by side to reduce scrolling
        (if (item :ingredients)
          (ingredient-table (item :ingredients)))])))
 
@@ -81,16 +82,16 @@
 
 (defn- recipe-table [recipes]
   (vcat
-    [:table
+    [:table {:width "30%" :style "display:inline-table; border:1px solid grey;"}
      [:tr
-      [:th {:colspan 3} (-> recipes first :skill difficulty-to-tier)]]]
+      [:th {:colspan 3 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
     (mapv recipe-link recipes)))
 
 (defn recipes-page [type]
-  (page
-    [:div {:width "50%" :align "center"}
+  (apply page
      (->> (recipes/get-recipes)
           (filter #(= type (:type %)))
           (sort-by :skill)
           (partition-by #(difficulty-to-tier (% :skill)))
-          (map recipe-table))]))
+          (map recipe-table))
+     ))
