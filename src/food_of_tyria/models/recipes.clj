@@ -21,7 +21,9 @@
 (defn- cookable? [recipe]
   (and
     (some #{"Chef"} (recipe :disciplines))
-    (not (contains? #{"Backpack" "Dye" "Feast" "Refinement" "RefinementObsidian"} (recipe :type)))))
+    (not (contains?
+           #{"Backpack" "Dye" "Feast" "Refinement" "RefinementObsidian" "Consumable" "Component"}
+           (recipe :type)))))
 
 (defn- fetch-and-store
   "Fetch an item by ID and store the result in the database. If already in the
