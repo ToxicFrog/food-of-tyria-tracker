@@ -40,16 +40,6 @@
             (select-keys [:name :id :icon :description]))
         item))))
 
-(defn- difficulty-to-tier [rating]
-  (condp > rating
-     75 "Novice"
-    150 "Initiate"
-    225 "Apprentice"
-    300 "Journeyman"
-    400 "Adept"
-    500 "Master"
-    999 "Grandmaster"))
-
 (defn- cook-and-store
   "Given a raw recipe returned from the GW2 API, fetch the item definitions for
   its output item and all input items into the database, and annotate the output
