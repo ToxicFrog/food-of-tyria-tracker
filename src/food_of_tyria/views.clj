@@ -1,13 +1,13 @@
 (ns food-of-tyria.views
-  (:require [hiccup.page :refer [html5 include-css]]
+  (:require [hiccup.page :refer [html5 include-css include-js]]
             [food-of-tyria.models.recipes :as recipes]))
 
 (defn- page [& body]
-  (println (first body))
   (html5
     [:head
-     [:title "Welcome to food-of-tyria"]
-     (include-css "/css/screen.css")]
+     [:title "Food of Tyria"]
+     (include-css "/css/screen.css")
+     (include-js "/js/tyria.js")]
     [:body body]))
 
 (declare ingredient-table)
@@ -24,13 +24,13 @@
    (if (item :ingredients)
      [:tr
       [:td {:colspan 2 :style "font-weight:bold; font-size:60px; vertical-align:top;"} "↳"]
-      [:td (ingredient-table (item :ingredients))]]
+      [:td (ingredient-table (item :ingredients) {:width "100%"})]]
      "")])
 
 (def vcat (comp vec concat))
 
-(defn- ingredient-table [ingredients]
-  (vcat [:table {:style "border:1px solid grey;"}]
+(defn- ingredient-table [ingredients attrs]
+  (vcat [:table (merge {:style "border:1px solid grey;"} attrs)]
         (mapcat item-tr ingredients)))
 
 (defn type-list []
@@ -51,17 +51,20 @@
        [:img {:src (item :icon)}]]
       ]]
       [:div {:align "center"}
-       [:i (item :type) " -- makes " (item :count)]
+       [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]
        " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
        " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
        "]"
-       (if (item :name) ; TODO replace with check if cooked or not
-         [:span {:style "font-weight:bold; text-shadow:0 0 5px #F00"} [:input {:type "checkbox"}] " 🍴"]
-         " 🍴")
+       [:span
+        (if (item :cooked)
+         {:style "font-weight:bold; text-shadow:0 0 5px #F00"}
+         {})
+        [:input {:type "checkbox" :checked (item :cooked) :onchange "toggleCooked(this);"}]
+        "🍴"]
        [:hr]
        ; TODO lay out ingredient tables side by side to reduce scrolling
        (if (item :ingredients)
-         (ingredient-table (item :ingredients)))])))
+         (ingredient-table (item :ingredients) {}))])))
 
 (defn- recipe-link [item]
   [:tr

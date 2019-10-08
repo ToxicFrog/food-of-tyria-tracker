@@ -92,3 +92,8 @@
   (->> (c/seek-at! db [:items])
        (map second)
        (filter :ingredients)))
+
+(defn set-cooked! [id state]
+  (c/update-at!
+    db [:items id]
+    (fn [item] (assoc item :cooked state))))

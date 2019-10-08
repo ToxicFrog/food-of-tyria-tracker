@@ -21,6 +21,12 @@
   (GET "/" [] (views/type-list))
   (GET "/recipes/:type" [type] (views/recipes-page type))
   (GET "/items/:id" [id :<< as-int] (views/item-page id))
+  (GET "/items/:id/set-cooked" [id :<< as-int]
+       (recipes/set-cooked! id true)
+       "")
+  (GET "/items/:id/unset-cooked" [id :<< as-int]
+       (recipes/set-cooked! id false)
+       "")
   (route/resources "/")
   (route/not-found "Not Found"))
 
