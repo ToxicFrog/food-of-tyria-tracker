@@ -33,17 +33,25 @@
        (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
        (apply page)))
 
+(defn cooked-toggle [id item]
+  [:span {:id (str "button:" id)}
+   [:input {:type "checkbox" :checked (item :cooked)
+            :id (str id) :class "cooked-toggle"
+            :onchange "toggleCooked(this);"}
+    "🍴"]])
+
 (defn page-header [id item]
   [:table {:align "center"}
    [:tr {:style "vertical-align:middle; text-align:center;"}
     [:td [:img {:style "vertical-align:middle;" :src (item :icon)}]]
     [:td {:style "vertical-align:middle; text-align:center;"}
-     [:h1 {:style "margin:0px;"} (item :name)] ;[:br]
+     [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
      [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]
      " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
      " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
-     "]"]
-    [:td [:img {:style "vertical-align:middle;" :src (item :icon)}]]
+     "]"
+     (cooked-toggle id item)
+    [:td [:img {:style "vertical-align:middle;" :src (item :icon)}]]]
     ]])
 
 (defn item-page [id]
@@ -51,12 +59,6 @@
     (page
       (page-header id item)
       [:div {:align "center"}
-       [:span
-        (if (item :cooked)
-          {:style "font-weight:bold; text-shadow:0 0 5px #F00"}
-          {})
-        [:input {:type "checkbox" :checked (item :cooked) :onchange "toggleCooked(this);"}]
-        "🍴"]
        [:hr]
        ; TODO lay out ingredient tables side by side to reduce scrolling
        (if (item :ingredients)

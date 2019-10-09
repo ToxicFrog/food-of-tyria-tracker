@@ -19,6 +19,7 @@
      [:title "Food of Tyria"]
      (include-css "/css/screen.css")
      (include-js "/js/tyria.js")]
-    [:body body]))
+    [:body {:onload "updateAllStyles();"}
+     body]))
 
 (def vcat (comp vec concat))
