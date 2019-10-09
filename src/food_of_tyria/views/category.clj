@@ -1,7 +1,6 @@
-(ns food-of-tyria.views
-  (:require [hiccup.page :refer [html5 include-css include-js]]
-            [food-of-tyria.views.common :refer :all]
-            [food-of-tyria.models.recipes :as recipes]))
+(ns food-of-tyria.views.category
+  (:require [food-of-tyria.views.common :refer :all]
+            [food-of-tyria.models.recipes :as recipes] ))
 
 (defn type-list []
   (->> (recipes/get-recipes)

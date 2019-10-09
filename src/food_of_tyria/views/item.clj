@@ -1,8 +1,6 @@
 (ns food-of-tyria.views.item
-  (:require
-    [food-of-tyria.views.common :refer :all]
-    [food-of-tyria.models.recipes :as recipes]
-    ))
+  (:require [food-of-tyria.views.common :refer :all]
+            [food-of-tyria.models.recipes :as recipes] ))
 
 (declare ingredient-table)
 
