@@ -1,37 +1,7 @@
 (ns food-of-tyria.views
   (:require [hiccup.page :refer [html5 include-css include-js]]
+            [food-of-tyria.views.common :refer :all]
             [food-of-tyria.models.recipes :as recipes]))
-
-(defn- page [& body]
-  (html5
-    [:head
-     [:title "Food of Tyria"]
-     (include-css "/css/screen.css")
-     (include-js "/js/tyria.js")]
-    [:body body]))
-
-(declare ingredient-table)
-
-(defn- item-tr [item]
-  [[:tr
-    [:td {:style "vertical-align:top;"}
-     [:img {:src (item :icon)
-            :title (item :description)}]]
-    [:td {:align "right"} [:b (item :count 1)]]
-    (if (item :ingredients)
-      [:td [:a {:href (str "/items/" (item :id))} (item :name)]]
-      [:td (item :name)])]
-   (if (item :ingredients)
-     [:tr
-      [:td {:colspan 2 :style "font-weight:bold; font-size:60px; vertical-align:top;"} "↳"]
-      [:td (ingredient-table (item :ingredients) {:width "100%"})]]
-     "")])
-
-(def vcat (comp vec concat))
-
-(defn- ingredient-table [ingredients attrs]
-  (vcat [:table (merge {:style "border:1px solid grey;"} attrs)]
-        (mapcat item-tr ingredients)))
 
 (defn type-list []
   (->> (recipes/get-recipes)
@@ -40,31 +10,6 @@
        (sort)
        (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
        (apply page)))
-
-(defn item-page [id]
-  (let [item (recipes/get-item id)]
-    (page
-      [:table [:tr {:style "vertical-align:middle;"}
-      [:h1
-       [:img {:src (item :icon)}]
-       " " (item :name) " "
-       [:img {:src (item :icon)}]]
-      ]]
-      [:div {:align "center"}
-       [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]
-       " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
-       " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
-       "]"
-       [:span
-        (if (item :cooked)
-         {:style "font-weight:bold; text-shadow:0 0 5px #F00"}
-         {})
-        [:input {:type "checkbox" :checked (item :cooked) :onchange "toggleCooked(this);"}]
-        "🍴"]
-       [:hr]
-       ; TODO lay out ingredient tables side by side to reduce scrolling
-       (if (item :ingredients)
-         (ingredient-table (item :ingredients) {}))])))
 
 (defn- recipe-link [item]
   [:td {:style "vertical-align:middle; text-align:left;"}
@@ -77,16 +22,6 @@
    [:input {:type "checkbox"} "🍴"] [:br] "&nbsp;"
    ]
    ])
-
-(defn- difficulty-to-tier [rating]
-  (condp > rating
-     75 "Novice"
-    150 "Initiate"
-    225 "Apprentice"
-    300 "Journeyman"
-    400 "Adept"
-    500 "Master"
-    999 "Grandmaster"))
 
 (defn- recipe-table [recipes]
   (vcat
