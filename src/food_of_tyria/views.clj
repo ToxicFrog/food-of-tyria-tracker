@@ -67,11 +67,16 @@
          (ingredient-table (item :ingredients) {}))])))
 
 (defn- recipe-link [item]
-  [:tr
-   [:td [:img {:src (item :icon)
-               :title (item :description)}]]
-   [:td {:align "right"} [:b (item :count 1)]]
-   [:td [:a {:href (str "/items/" (item :id))} (item :name)]]])
+  [:td {:style "vertical-align:middle; text-align:left;"}
+   [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]
+   [:div {:style "display:inline-block"}
+   [:a {:href (str "/items/" (item :id))} (item :name)]
+   [:br]
+   ; [:i "makes " (item :count 1)]
+   ; [:br]
+   [:input {:type "checkbox"} "🍴"] [:br] "&nbsp;"
+   ]
+   ])
 
 (defn- difficulty-to-tier [rating]
   (condp > rating
@@ -85,10 +90,14 @@
 
 (defn- recipe-table [recipes]
   (vcat
-    [:table {:width "30%" :style "display:inline-table; border:1px solid grey;"}
+    [:table {:style "border:1px solid grey; width:100%;"}
      [:tr
-      [:th {:colspan 3 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
-    (mapv recipe-link recipes)))
+      [:th {:colspan 4 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
+    (->> recipes
+         (map recipe-link)
+         (partition 4)
+         (map #(do [:tr %]))
+         vec)))
 
 (defn recipes-page [type]
   (apply page
