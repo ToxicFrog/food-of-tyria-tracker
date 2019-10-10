@@ -24,7 +24,7 @@
       [:th {:colspan 4 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
     (->> recipes
          (map recipe-link)
-         (partition 4)
+         (partition-all 4)
          (map #(do [:tr %]))
          vec)))
 

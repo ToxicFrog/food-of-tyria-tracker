@@ -71,7 +71,7 @@
       (as-> (http/get "https://api.guildwars2.com/v2/recipes") $
             (:body $)
             (json/read-str $ :key-fn keyword)
-            (partition 30 $)
+            (partition-all 30 $)
             (mapcat fetch-recipes $)
             (filter cookable? $)
             (run! cook-and-store $))
