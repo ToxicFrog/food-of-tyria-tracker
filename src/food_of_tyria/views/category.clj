@@ -10,17 +10,20 @@
        (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
        (apply page)))
 
-(defn- recipe-link [item]
+(defn- recipe-link [{id :id :as item}]
   [:td {:style "vertical-align:middle; text-align:left;"}
    [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]
    [:div {:style "display:inline-block"}
-   [:a {:href (str "/items/" (item :id))} (item :name)]
+   [:a {:href (str "/items/" (item :id)) :id (str "label:" (item :id))}
+    (item :name)]
    [:br]
-   ; [:i "makes " (item :count 1)]
-   ; [:br]
-   [:input {:type "checkbox"} "🍴"] [:br] "&nbsp;"
-   ]
-   ])
+   [:span {:id (str "button:" id)}
+    [:input {:type "checkbox" :checked (item :cooked)
+             :id (str id) :class "cooked-toggle"
+             :onchange "toggleCooked(this);"}
+     "🍴"]]
+   [:br] "&nbsp;"
+   ]])
 
 (defn- recipe-table [recipes]
   (vcat
