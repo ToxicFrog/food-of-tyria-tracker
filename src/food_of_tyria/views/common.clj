@@ -18,9 +18,11 @@
        (map :type)
        (distinct)
        (sort)
-       (mapcat (fn [type]
-                 [[:a {:href (str "/recipes/" type)} type]]))
-       (interpose [:b " | "])
+       (map (fn [type]
+              [[:a {:href (str "/recipes/" type)} type]
+               " (" (recipes/cooked-percentage type) ") "]))
+       (interpose [[:b " | "]])
+       (mapcat identity)
        (concat [:div {:style "width:100%; text-align:center;"}])
        (vec)))
 

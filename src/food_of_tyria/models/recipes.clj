@@ -97,3 +97,9 @@
   (c/update-at!
     db [:items id]
     (fn [item] (assoc item :cooked state))))
+
+(defn cooked-percentage [category]
+  (let [recipes (filter #(= (% :type) category) (get-recipes))
+        total (count recipes)
+        cooked (count (filter :cooked recipes))]
+    (str (/ (* 100 cooked) total) "%")))
