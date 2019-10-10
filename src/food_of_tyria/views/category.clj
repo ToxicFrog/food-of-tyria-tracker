@@ -21,7 +21,7 @@
   (vcat
     [:table {:style "border:0px solid grey; width:100%;"}
      [:tr
-      [:th {:colspan 4 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
+      [:th {:colspan 4 :style "border:1px solid #0aa;"} (-> recipes first :skill difficulty-to-tier)]]]
     (->> recipes
          (map recipe-link)
          (partition-all 4)
