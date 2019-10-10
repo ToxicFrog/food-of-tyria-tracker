@@ -3,7 +3,7 @@
             [food-of-tyria.models.recipes :as recipes] ))
 
 (defn- recipe-link [{id :id :as item}]
-  [:td {:style "vertical-align:middle; text-align:left;"}
+  [:td {:style "vertical-align:middle; text-align:left; width:25%"}
    [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]
    [:div {:style "display:inline-block"}
    [:a {:href (str "/items/" (item :id)) :id (str "label:" (item :id))}
@@ -19,7 +19,7 @@
 
 (defn- recipe-table [recipes]
   (vcat
-    [:table {:style "border:1px solid grey; width:100%;"}
+    [:table {:style "border:0px solid grey; width:100%;"}
      [:tr
       [:th {:colspan 4 :style "border:1px solid cyan;"} (-> recipes first :skill difficulty-to-tier)]]]
     (->> recipes
@@ -34,5 +34,5 @@
           (filter #(= type (:type %)))
           (sort-by :skill)
           (partition-by #(difficulty-to-tier (% :skill)))
-          (map recipe-table))
-     ))
+          (filter (complement empty?))
+          (map recipe-table))))
