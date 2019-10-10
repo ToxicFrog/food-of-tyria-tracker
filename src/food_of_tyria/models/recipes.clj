@@ -102,4 +102,5 @@
   (let [recipes (filter #(= (% :type) category) (get-recipes))
         total (count recipes)
         cooked (count (filter :cooked recipes))]
-    (str (/ (* 100 cooked) total) "%")))
+    (str (quot (* 100 cooked) total) "%")))
+

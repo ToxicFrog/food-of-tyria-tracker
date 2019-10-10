@@ -21,4 +21,5 @@
    {:ring
     {:open-browser? false, :stacktraces? false, :auto-reload? false :port 8099}}
    :dev
-   {:dependencies [[ring/ring-mock "0.4.0"] [ring/ring-devel "1.7.1"]]}})
+   {:dependencies [[ring/ring-mock "0.4.0"] [ring/ring-devel "1.7.1"]]
+    :ring {:open-browser? false :port 8099}}})
