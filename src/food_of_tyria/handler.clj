@@ -4,8 +4,9 @@
             [hiccup.middleware :refer [wrap-base-url]]
             [compojure.handler :as handler]
             [compojure.route :as route]
+            [ring.util.response :refer [redirect]]
             [food-of-tyria.views.item :refer [item-page]]
-            [food-of-tyria.views.category :refer [recipes-page type-list]]
+            [food-of-tyria.views.category :refer [recipes-page]]
             [food-of-tyria.models.recipes :as recipes]))
 
 (defn init []
@@ -17,7 +18,7 @@
   (recipes/deinit))
 
 (defroutes app-routes
-  (GET "/" [] (type-list))
+  (GET "/" [] (redirect "/recipes/IngredientCooking"))
   (GET "/recipes/:type" [type] (recipes-page type))
   (GET "/items/:id" [id :<< as-int] (item-page id))
   (GET "/items/:id/set-cooked" [id :<< as-int]

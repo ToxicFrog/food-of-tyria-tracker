@@ -2,14 +2,6 @@
   (:require [food-of-tyria.views.common :refer :all]
             [food-of-tyria.models.recipes :as recipes] ))
 
-(defn type-list []
-  (->> (recipes/get-recipes)
-       (map :type)
-       (distinct)
-       (sort)
-       (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
-       (apply page)))
-
 (defn- recipe-link [{id :id :as item}]
   [:td {:style "vertical-align:middle; text-align:left;"}
    [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]

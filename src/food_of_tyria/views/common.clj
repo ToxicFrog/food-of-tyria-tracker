@@ -13,6 +13,17 @@
     500 "Master"
     999 "Grandmaster"))
 
+(defn type-list []
+  (->> (recipes/get-recipes)
+       (map :type)
+       (distinct)
+       (sort)
+       (mapcat (fn [type]
+                 [[:a {:href (str "/recipes/" type)} type]]))
+       (interpose [:b " | "])
+       (concat [:div {:style "width:100%; text-align:center;"}])
+       (vec)))
+
 (defn page [& body]
   (html5
     [:head
@@ -20,6 +31,8 @@
      (include-css "/css/screen.css")
      (include-js "/js/tyria.js")]
     [:body {:onload "updateAllStyles();"}
-     body]))
+      (type-list)
+      [:hr]
+      body]))
 
 (def vcat (comp vec concat))

@@ -23,14 +23,6 @@
   (vcat [:table (merge {:style "border:1px solid grey;"} attrs)]
         (mapcat item-tr ingredients)))
 
-(defn type-list []
-  (->> (recipes/get-recipes)
-       (map :type)
-       (distinct)
-       (sort)
-       (mapcat (fn [type] [[:a {:href (str "/recipes/" type)} type] [:br]]))
-       (apply page)))
-
 (defn cooked-toggle [id item]
   [:span {:id (str "button:" id)}
    [:input {:type "checkbox" :checked (item :cooked)
