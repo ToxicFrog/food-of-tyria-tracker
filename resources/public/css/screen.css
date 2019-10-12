@@ -30,3 +30,23 @@ td.recipe-cell {
 td.recipe-details {
   width: initial;
 }
+
+img {
+  padding-right: 1em;
+}
+
+table.page-header {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+table.page-header img {
+  padding-right: 1em;
+  padding-left: 1em;
+  vertical-align: middle;
+}
+
+table.page-header tr {
+  vertical-align: middle;
+  text-align: center;
+}

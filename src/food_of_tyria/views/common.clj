@@ -6,7 +6,7 @@
 (defn- ingredient-cell [{id :id :as item} opts]
   [:td.ingredient-cell (apply assoc {} nil nil opts)
    [:a {:href (str "/ingredient/" id)}
-    [:img {:style "vertical-align:middle; padding-right:1em;" :src (item :icon) :title (item :description)}]]
+    [:img {:style "vertical-align:middle;" :src (item :icon) :title (item :description)}]]
    " "
    (if (item :count)
      [:b (item :count) " "]
@@ -16,7 +16,7 @@
 (defn- recipe-cell [{id :id :as item} opts]
   [:td.recipe-cell (apply assoc {} nil nil opts)
    [:a {:href (str "/ingredient/" id)}
-    [:img {:style "vertical-align:bottom; padding-right:1em;" :src (item :icon) :title (item :description)}]]
+    [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]]
    [:div {:style "display:inline-block;"}
     (if (item :count)
       [:b (item :count) " "]
@@ -38,9 +38,9 @@
     (ingredient-cell item opts)))
 
 (defn page-header [{id :id icon :icon :as item} subheading]
-  [:table {:align "center"}
-   [:tr {:style "vertical-align:middle; text-align:center;"}
-    [:td [:img {:style "vertical-align:middle;" :src icon}]]
+  [:table.page-header
+   [:tr
+    [:td [:img {:src icon}]]
     [:td {:style "vertical-align:middle; text-align:center;"}
      [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
      subheading
@@ -50,7 +50,7 @@
        "")
      "]"
      ]
-    [:td [:img {:style "vertical-align:middle;" :src icon}]]]
+    [:td [:img {:src icon}]]]
    ])
 
 (defn difficulty-to-tier [rating]
