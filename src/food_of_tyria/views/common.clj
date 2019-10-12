@@ -40,7 +40,7 @@
 (defn page-header [{id :id icon :icon :as item} subheading]
   [:table.page-header
    [:tr
-    [:td [:img {:src icon}]]
+    [:td [:a {:href (str "/ingredient/" id)} [:img {:src icon}]]]
     [:td {:style "vertical-align:middle; text-align:center;"}
      [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
      subheading
@@ -50,8 +50,7 @@
        "")
      "]"
      ]
-    [:td [:img {:src icon}]]]
-   ])
+    [:td [:a {:href (str "/ingredient/" id)} [:img {:src icon}]]]]])
 
 (defn difficulty-to-tier [rating]
   (condp > rating
