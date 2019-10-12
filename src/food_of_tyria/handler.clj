@@ -5,6 +5,7 @@
             [compojure.handler :as handler]
             [compojure.route :as route]
             [ring.util.response :refer [redirect]]
+            [food-of-tyria.views.search :refer [search-results]]
             [food-of-tyria.views.item :refer [item-page]]
             [food-of-tyria.views.category :refer [recipes-page]]
             [food-of-tyria.models.recipes :as recipes]))
@@ -27,6 +28,7 @@
   (GET "/items/:id/unset-cooked" [id :<< as-int]
        (recipes/set-cooked! id false)
        "")
+  (GET "/search" [q] (search-results q))
   (route/resources "/")
   (route/not-found "Not Found"))
 

@@ -33,7 +33,13 @@
      (include-css "/css/screen.css")
      (include-js "/js/tyria.js")]
     [:body {:onload "updateAllStyles();"}
-      (type-list)
+      (vec (concat
+        (type-list)
+        [[:form {:action "/search" :method "get" :style "display:inline; width:100%; text-align:right; padding-left:10%;"}
+          [:input {:type "search" :name "q"
+                   :placeholder "Search"
+                   :spellcheck false
+                   }]]]))
       [:hr]
       body]))
 
