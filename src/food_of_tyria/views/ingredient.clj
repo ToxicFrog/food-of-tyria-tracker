@@ -3,7 +3,6 @@
             [food-of-tyria.models.recipes :as recipes] ))
 
 (defn- result-table [results]
-  (println "result-table" results)
   (vcat
     [:table {:style "border:0px solid grey; width:100%;"}]
     (->> results
@@ -22,7 +21,6 @@
 (defn ingredient-page [id]
   (let [item (recipes/get-item id)
         usage (recipes/get-usage id)]
-    (println "ingredient-page" usage)
     (page
       (header item (count usage))
       (if (seq usage)
