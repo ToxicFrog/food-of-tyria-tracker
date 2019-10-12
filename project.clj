@@ -1,6 +1,6 @@
 (defproject food-of-tyria "0.1.0-SNAPSHOT"
-  :description "FIXME: write description"
-  :url "http://example.com/FIXME"
+  :description "Keep track of what recipes from Guild Wars 2 you've cooked."
+  :url "http://github.com/ToxicFrog/food-of-tyria-tracker/"
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [org.clojure/data.json "0.2.6"]
                  [clj-http "0.7.6"]
