@@ -37,6 +37,22 @@
     (recipe-cell item opts)
     (ingredient-cell item opts)))
 
+(defn page-header [{id :id icon :icon :as item} subheading]
+  [:table {:align "center"}
+   [:tr {:style "vertical-align:middle; text-align:center;"}
+    [:td [:img {:style "vertical-align:middle;" :src icon}]]
+    [:td {:style "vertical-align:middle; text-align:center;"}
+     [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
+     subheading
+     " [API " [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
+     (if (item :recipe-id)
+       [:span " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]]
+       "")
+     "]"
+     ]
+    [:td [:img {:style "vertical-align:middle;" :src icon}]]]
+   ])
+
 (defn difficulty-to-tier [rating]
   (condp > rating
      75 "Novice"

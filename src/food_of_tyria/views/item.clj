@@ -24,24 +24,13 @@
             :onchange "toggleCooked(this);"}
     "🍴"]])
 
-(defn page-header [id item]
-  [:table {:align "center"}
-   [:tr {:style "vertical-align:middle; text-align:center;"}
-    [:td [:img {:style "vertical-align:middle;" :src (item :icon)}]]
-    [:td {:style "vertical-align:middle; text-align:center;"}
-     [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
-     [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]
-     " [API " [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
-     " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
-     "]"
-     (cooked-toggle id item)
-    [:td [:img {:style "vertical-align:middle;" :src (item :icon)}]]]
-    ]])
+(defn header [item]
+  (page-header item [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]))
 
 (defn item-page [id]
   (let [item (recipes/get-item id)]
     (page
-      (page-header id item)
+      (header item)
       [:div {:align "center"}
        [:hr]
        ; TODO lay out ingredient tables side by side to reduce scrolling
