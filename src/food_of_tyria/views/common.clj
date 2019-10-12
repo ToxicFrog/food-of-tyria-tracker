@@ -3,15 +3,24 @@
     [hiccup.page :refer [html5 include-css include-js]]
     [food-of-tyria.models.recipes :as recipes]))
 
-(defn- ingredient-cell [{id :id :as item}]
-  [:td {:style "vertical-align:middle; text-align:left; width:25%"}
-   [:img {:style "vertical-align:middle;" :src (item :icon) :title (item :description)}]
+(defn- ingredient-cell [{id :id :as item} opts]
+  [:td.ingredient-cell (apply assoc {} nil nil opts)
+   [:a {:href (str "/ingredient/" id)}
+    [:img {:style "vertical-align:middle; padding-right:1em;" :src (item :icon) :title (item :description)}]]
+   " "
+   (if (item :count)
+     [:b (item :count) " "]
+     "")
    (item :name)])
 
-(defn- recipe-cell [{id :id :as item}]
-  [:td {:style "vertical-align:middle; text-align:left; width:25%"}
-   [:img {:style "vertical-align:bottom;" :src (item :icon) :title (item :description)}]
-   [:div {:style "display:inline-block"}
+(defn- recipe-cell [{id :id :as item} opts]
+  [:td.recipe-cell (apply assoc {} nil nil opts)
+   [:a {:href (str "/ingredient/" id)}
+    [:img {:style "vertical-align:bottom; padding-right:1em;" :src (item :icon) :title (item :description)}]]
+   [:div {:style "display:inline-block;"}
+    (if (item :count)
+      [:b (item :count) " "]
+      "")
     [:a {:href (str "/items/" (item :id)) :id (str "label:" (item :id))}
      (item :name)]
     [:br]
@@ -23,10 +32,10 @@
     [:br] "&nbsp;"
     ]])
 
-(defn item-cell [item]
+(defn item-cell [item & opts]
   (if (item :ingredients)
-    (recipe-cell item)
-    (ingredient-cell item)))
+    (recipe-cell item opts)
+    (ingredient-cell item opts)))
 
 (defn difficulty-to-tier [rating]
   (condp > rating

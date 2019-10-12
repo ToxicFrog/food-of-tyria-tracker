@@ -6,18 +6,12 @@
 
 (defn- item-tr [item]
   [[:tr
-    [:td {:style "vertical-align:top;"}
-     [:img {:src (item :icon)
-            :title (item :description)}]]
-    [:td {:align "right"} [:b (item :count 1)]]
-    (if (item :ingredients)
-      [:td [:a {:href (str "/items/" (item :id))} (item :name)]]
-      [:td (item :name)])]
+    (item-cell item :colspan 2 :class "recipe-details")
    (if (item :ingredients)
      [:tr
-      [:td {:colspan 2 :style "font-weight:bold; font-size:60px; vertical-align:top;"} "↳"]
+      [:td {:style "font-weight:bold; font-size:60px; vertical-align:top;"} "↳"]
       [:td (ingredient-table (item :ingredients) {:width "100%"})]]
-     "")])
+     "")]])
 
 (defn- ingredient-table [ingredients attrs]
   (vcat [:table (merge {:style "border:1px solid grey;"} attrs)]

@@ -16,3 +16,17 @@ a {
 a:visited {
   color: #b7e;
 }
+
+td.ingredient-cell {
+  white-space: nowrap;
+  width: 25%;
+}
+
+td.recipe-cell {
+  white-space: nowrap;
+  width: 25%;
+}
+
+td.recipe-details {
+  width: initial;
+}
