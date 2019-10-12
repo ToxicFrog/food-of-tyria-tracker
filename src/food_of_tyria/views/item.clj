@@ -37,7 +37,7 @@
     [:td {:style "vertical-align:middle; text-align:center;"}
      [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
      [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]
-     " [" [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
+     " [API " [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
      " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]
      "]"
      (cooked-toggle id item)

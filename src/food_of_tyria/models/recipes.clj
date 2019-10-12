@@ -110,8 +110,6 @@
        (map string/lower-case)))
 
 (defn- matches? [query item]
-  (println "matches?" query)
-  (println "matches:" (vec (item-texts item)))
   (every?
     (fn [query-word] (some #(string/includes? % query-word) (item-texts item)))
     query))
@@ -119,8 +117,23 @@
 (defn search
   "Return all ingredients and recipes that match a search query, which is a set of strings. An ingredient or recipe is considered to 'match' if all search terms appear somewhere in (name of recipe) U (list of recipe ingredient names)."
   [query]
-  (println "query: " query)
   (->> (c/seek-at! db [:items])
        (map first)
        (map get-item)
        (filter #(matches? query %))))
+
+(defn- ingredient-ids [item]
+  (->> (tree-seq :ingredients :ingredients item)
+       (map :id)))
+
+(defn- uses? [id item]
+  (some #(== % id)
+        (mapcat ingredient-ids (item :ingredients))))
+
+(defn get-usage
+  "Return all recipes that use the given ingredient, directly or indirectly."
+  [id]
+  (->> (c/seek-at! db [:items])
+       (map first)
+       (map get-item)
+       (filter #(uses? id %))))
