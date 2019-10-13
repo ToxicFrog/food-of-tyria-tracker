@@ -44,11 +44,11 @@
     [:td {:style "vertical-align:middle; text-align:center;"}
      [:h1 {:style "margin:0px;" :id (str "label:" id)} (item :name)]
      subheading
-     " [API " [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "item"]
-     (if (item :recipe-id)
-       [:span " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "recipe"]]
-       "")
-     "]"
+     ; " [API " [:a {:href (str "https://api.guildwars2.com/v2/items/" id)} "⏣item"]
+     ; (if (item :recipe-id)
+     ;   [:span " " [:a {:href (str "https://api.guildwars2.com/v2/recipes/" (item :recipe-id))} "⚙recipe"]]
+     ;   "")
+     ; "]"
      ]
     [:td [:a {:href (str "/ingredient/" id)} [:img {:src icon}]]]]])
 
