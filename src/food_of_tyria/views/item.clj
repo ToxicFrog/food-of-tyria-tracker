@@ -17,7 +17,7 @@
   (vcat [:table (merge {:style "border:1px solid grey;"} attrs)]
         (mapcat item-tr ingredients)))
 
-(defn cooked-toggle [id item]
+(defn cooked-toggle [{id :id :as item}]
   [:span {:id (str "button:" id)}
    [:input {:type "checkbox" :checked (item :cooked)
             :id (str id) :class "cooked-toggle"
@@ -25,7 +25,12 @@
     "🍴"]])
 
 (defn header [item]
-  (page-header item [:i [:a {:href (str "/recipes/" (item :type))} (item :type)] " -- makes " (item :count)]))
+  (page-header item
+    [:span
+     [:i
+      (difficulty-to-tier (item :skill)) " " (item :type) " -- makes " (item :count)]
+     "&nbsp;"
+     (cooked-toggle item)]))
 
 (defn item-page [id]
   (let [item (recipes/get-item id)]
