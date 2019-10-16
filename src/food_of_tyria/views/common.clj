@@ -28,7 +28,9 @@
      [:input {:type "checkbox" :checked (item :cooked)
               :id (str id) :class "cooked-toggle"
               :onchange "toggleCooked(this);"}
-      "🍴"]]
+      "🍴"]
+     (if (not (recipes/prerequisites-cooked? id))
+       [:b {:style "color:#F00;"} "    ⚠"])]
     [:br] "&nbsp;"
     ]])
 

@@ -137,3 +137,16 @@
        (map first)
        (map get-item)
        (filter #(uses? id %))))
+
+(declare prerequisites-cooked?)
+
+(defn- satisfies-prerequisite? [{:keys [id ingredients cooked]}]
+  (or
+    (nil? ingredients)
+    (and cooked (prerequisites-cooked? id))))
+
+; A recipe's prerequisites are cooked if every ingredient is either:
+; - a plain ingredient, or
+; - a recipe that is cooked and whose prerequisites are cooked
+(defn prerequisites-cooked? [id]
+  (every? satisfies-prerequisite? (:ingredients (get-item id))))
