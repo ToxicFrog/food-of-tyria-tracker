@@ -10,3 +10,5 @@ pom.xml
 .lein-plugins
 .lein-env
 food.codax/
+.lein-repl-history
+*.sublime-*
