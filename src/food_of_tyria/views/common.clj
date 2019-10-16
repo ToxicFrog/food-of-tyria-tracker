@@ -55,7 +55,8 @@
     [:td [:a {:href (str "/ingredient/" id)} [:img {:src icon}]]]]])
 
 (defn difficulty-to-tier [rating]
-  (condp > rating
+  (condp > (or rating -1)
+      0 "Ingredient"
      75 "Novice"
     150 "Initiate"
     225 "Apprentice"
