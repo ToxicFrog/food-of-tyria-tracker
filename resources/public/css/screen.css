@@ -50,3 +50,12 @@ table.page-header tr {
   vertical-align: middle;
   text-align: center;
 }
+
+span.cooked-recipe {
+  font-weight: bold;
+  text-shadow: 0 0 5px #0FF;
+}
+
+a.cooked-recipe, h1.cooked-recipe {
+  text-decoration: line-through;
+}

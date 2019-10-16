@@ -10,13 +10,11 @@ function updateStyle(input) {
   const button = document.getElementById("button:" + id);
 
   if (input.checked) {
-    button.style.fontWeight = "bold";
-    button.style.textShadow = "0 0 5px #F00";
-    label.style.textDecoration = "line-through";
+    button.classList.add("cooked-recipe");
+    label.classList.add("cooked-recipe");
   } else {
-    button.style.fontWeight = null;
-    button.style.textShadow = null;
-    label.style.textDecoration = null;
+    button.classList.remove("cooked-recipe");
+    label.classList.remove("cooked-recipe");
   }
 }
 
