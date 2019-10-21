@@ -65,18 +65,29 @@
     500 "Master"
     999 "Grandmaster"))
 
+(defn progress-bar [type]
+  (let [[cooked total] (recipes/cooked-percentage type)
+        percent (quot (* 100 cooked) total)
+        cls (condp >= (quot (* 100 cooked) total)
+                0 "not-started"
+               33 "low-progress"
+               66 "medium-progress"
+               99 "high-progress"
+              100 "completed")]
+    [:td
+     [:a {:href (str "/recipes/" type)} type]
+     "&nbsp;(" percent "%)"
+     [:br]
+     [:progress {:class cls :min 0 :max total :value cooked}]]))
+
 (defn type-list []
   (->> (recipes/get-recipes)
        (map :type)
        (distinct)
        (sort)
-       (map (fn [type]
-              [[:a {:href (str "/recipes/" type)} type]
-               " (" (recipes/cooked-percentage type) ") "]))
-       (interpose [[:b " | "]])
-       (mapcat identity)
-       (concat [:div {:style "width:100%; text-align:center;"}])
-       (vec)))
+       (map progress-bar)))
+
+(def vcat (comp vec concat))
 
 (defn page [& body]
   (html5
@@ -85,14 +96,18 @@
      (include-css "/css/screen.css")
      (include-js "/js/tyria.js")]
     [:body {:onload "updateAllStyles();"}
-      (vec (concat
+     [:table.nav-header
+      (vcat
+        [:tr]
         (type-list)
-        [[:form {:action "/search" :method "get" :style "display:inline; width:100%; text-align:right; padding-left:10%;"}
-          [:input {:type "search" :name "q"
-                   :placeholder "Search"
-                   :spellcheck false
-                   }]]]))
-      [:hr]
-      body]))
+        [[:td {:style "width:100%;"}]
+         [:td
+          [:form {:action "/search" :method "get" }
+           [:input {:type "search" :name "q"
+                    :placeholder "Search"
+                    :spellcheck false
+                    }]]]])]
+     [:hr]
+     body]))
 
 (def vcat (comp vec concat))

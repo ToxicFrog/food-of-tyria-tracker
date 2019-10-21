@@ -6,7 +6,7 @@
 
 (defn- recipe-table [recipes]
   (vcat
-    [:table {:style "border:0px solid grey; width:100%;"}
+    [:table {:style "border:0px; width:100%;"}
      [:tr
       [:th {:colspan 4 :style "border:1px solid #0aa;"} (-> recipes first :skill difficulty-to-tier)]]]
     (->> recipes

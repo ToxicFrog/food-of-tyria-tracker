@@ -102,7 +102,7 @@
   (let [recipes (filter #(= (% :type) category) (get-recipes))
         total (count recipes)
         cooked (count (filter :cooked recipes))]
-    (str (quot (* 100 cooked) total) "%")))
+    [cooked total]))
 
 (defn- item-texts [item]
   (->> (tree-seq :ingredients :ingredients item)
