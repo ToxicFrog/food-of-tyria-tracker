@@ -70,32 +70,40 @@ table.nav-header progress {
   width: 10em;
 }
 
-/*table.nav-header progress.not-started {
-  box-shadow: inset 0px 0px 5px 0px #F00;
-}
-
+/*
+table.nav-header progress.not-started {
 table.nav-header progress.low-progress {
-  box-shadow: inset 0px 0px 5px 0px #80F;
-}
-
 table.nav-header progress.medium-progress {
-  box-shadow: inset 0px 0px 5px 0px #08F;
-}
-
 table.nav-header progress.high-progress {
-  box-shadow: inset 0px 0px 5px 0px #0FF;
-}
 */
+
 table.nav-header progress.completed {
   box-shadow: inset 0px 0px 5px 3px #FF0;
 }
 
-/*
-table.nav-header td {
-  border-right-width: 1em;
+table.search-result {
+  border: 0px;
+  width: 100%;
+  border-collapse: collapse;
 }
 
-table.nav-header td:last-child {
-  border-right-width: initial;
+table.search-result tr.header {
+   border:1px solid #0aa;
 }
-*/
+
+table.search-result tr.header th:first-child {
+  border-right: 0px;
+  padding-right: 0.5em;
+  text-align: right;
+}
+
+table.search-result tr.header th:last-child {
+  border-left: 0px;
+  padding-left: 0.5em;
+  text-align: left;
+}
+
+table.search-result progress.completed {
+  box-shadow: inset 0px 0px 5px 3px #FF0;
+}
+

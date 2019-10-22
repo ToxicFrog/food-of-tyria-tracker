@@ -5,15 +5,28 @@
             ))
 
 (defn- recipe-table [recipes]
-  (vcat
-    [:table {:style "border:0px; width:100%;"}
-     [:tr
-      [:th {:colspan 4 :style "border:1px solid #0aa;"} (-> recipes first :skill difficulty-to-tier)]]]
-    (->> recipes
-         (map item-cell)
-         (partition-all 4)
-         (map #(do [:tr %]))
-         vec)))
+  (let [cooked (count (filter :cooked recipes))
+        total (count recipes)
+        percent (quot (* 100 cooked) total)
+        cls (condp >= (quot (* 100 cooked) total)
+                0 "not-started"
+               33 "low-progress"
+               66 "medium-progress"
+               99 "high-progress"
+              100 "completed")]
+    (vcat
+      [:table.search-result
+       [:tr.header
+        [:th {:colspan 2}
+         (-> recipes first :skill difficulty-to-tier)]
+        [:th {:colspan 2}
+         [:progress {:min 0 :value cooked :max total :class cls}]
+         "&nbsp;(" percent "%)"]]]
+      (->> recipes
+           (map item-cell)
+           (partition 4 4 (repeatedly (constantly [:td])))
+           (map #(do [:tr %]))
+           vec))))
 
 (defn show-results [recipes]
   (->> recipes
@@ -27,4 +40,3 @@
     (->> (recipes/search query)
          (show-results)
          (apply page))))
-

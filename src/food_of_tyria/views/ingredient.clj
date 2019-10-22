@@ -7,7 +7,7 @@
     [:table {:style "border:0px solid grey; width:100%;"}]
     (->> results
          (map item-cell)
-         (partition-all 4)
+         (partition 4 4 (repeatedly (constantly [:td])))
          (map #(do [:tr %]))
          vec)))
 
